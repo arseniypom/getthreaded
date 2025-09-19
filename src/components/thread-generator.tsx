@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -12,8 +12,17 @@ interface ThreadGeneratorProps {
   isLoading: boolean;
 }
 
+const placeholders = [
+  "Different data types in JavaScript",
+  "How to build a personal brand",
+  "React best practices in 2025",
+  "Morning routine tips for productivity",
+  "Understanding Web3 basics"
+];
+
 export function ThreadGenerator({ onGenerate, isLoading }: ThreadGeneratorProps) {
   const [idea, setIdea] = useState('');
+  const [placeholder, setPlaceholder] = useState("What's your idea?");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,15 +32,10 @@ export function ThreadGenerator({ onGenerate, isLoading }: ThreadGeneratorProps)
     }
   };
 
-  const placeholders = [
-    "Different data types in JavaScript",
-    "How to build a personal brand",
-    "React best practices in 2025",
-    "Morning routine tips for productivity",
-    "Understanding Web3 basics"
-  ];
-
-  const randomPlaceholder = placeholders[Math.floor(Math.random() * placeholders.length)];
+  useEffect(() => {
+    const randomPlaceholder = placeholders[Math.floor(Math.random() * placeholders.length)];
+    setPlaceholder(randomPlaceholder);
+  }, []);
 
   if (isLoading) {
     return (
@@ -63,7 +67,7 @@ export function ThreadGenerator({ onGenerate, isLoading }: ThreadGeneratorProps)
               id="idea"
               value={idea}
               onChange={(e) => setIdea(e.target.value)}
-              placeholder={randomPlaceholder}
+              placeholder={placeholder}
               className="min-h-[120px] resize-none"
               autoFocus
             />

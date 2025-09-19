@@ -1,8 +1,5 @@
 'use client';
 
-import { ThreadGenerator } from '@/components/thread-generator';
-import { ThreadDisplay } from '@/components/thread-display';
-import { useThreadGenerator } from '@/hooks/use-thread-generator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Separator } from '@/components/ui/separator';
 import {
@@ -12,9 +9,7 @@ import {
   BreadcrumbPage,
 } from '@/components/ui/breadcrumb';
 
-export default function Home() {
-  const { posts, isLoading, error, generateThread, resetThread } = useThreadGenerator();
-
+export default function Analytics() {
   return (
     <>
       <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
@@ -26,7 +21,7 @@ export default function Home() {
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbPage>Create</BreadcrumbPage>
+              <BreadcrumbPage>Analytics</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -36,34 +31,21 @@ export default function Home() {
           <div className="container mx-auto px-4 py-12">
             <header className="text-center mb-12">
               <h1 className="text-4xl font-bold tracking-tight mb-3">
-                Create Threads
+                Analytics
               </h1>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Transform your ideas into engaging multi-post Threads instantly.
-                Powered by AI, optimized for engagement.
+                Track your thread performance and engagement metrics.
               </p>
             </header>
 
             <main className="space-y-12">
-              {posts.length === 0 ? (
-                <ThreadGenerator
-                  onGenerate={generateThread}
-                  isLoading={isLoading}
-                />
-              ) : (
-                <ThreadDisplay
-                  posts={posts}
-                  onReset={resetThread}
-                />
-              )}
-
-              {error && (
-                <div className="max-w-2xl mx-auto">
-                  <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
-                    <p className="text-sm text-destructive">{error}</p>
-                  </div>
+              <div className="max-w-2xl mx-auto">
+                <div className="bg-muted/50 border rounded-lg p-8 text-center">
+                  <p className="text-muted-foreground">
+                    Analytics features coming soon. Track your thread performance, engagement rates, and more.
+                  </p>
                 </div>
-              )}
+              </div>
             </main>
           </div>
         </div>
