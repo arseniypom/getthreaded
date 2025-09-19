@@ -113,6 +113,12 @@ export class ThreadsScraper {
 
     const username = handleFromUrl(handle);
     const url = `${config.threads.baseUrl}/@${username}`;
+
+    // Additional security check: ensure URL is still safe
+    if (!url.startsWith('https://threads.net/@') && !url.startsWith('https://www.threads.net/@')) {
+      throw new Error('Invalid URL construction detected');
+    }
+
     const page = await this.context.newPage();
 
     try {

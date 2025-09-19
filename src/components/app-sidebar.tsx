@@ -3,7 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { BarChart3, Plus, MessageSquare } from "lucide-react"
+import { TrendingUp, Plus, MessageSquare } from "lucide-react"
 
 import {
   Sidebar,
@@ -29,9 +29,9 @@ const data = {
           icon: Plus,
         },
         {
-          title: "Analytics",
-          url: "/analytics",
-          icon: BarChart3,
+          title: "Insights",
+          url: "/insights",
+          icon: TrendingUp,
         },
       ],
     },

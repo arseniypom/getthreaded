@@ -1,4 +1,4 @@
-export const OPENAI_MODEL = 'gpt-4o-mini';
+export const OPENAI_MODEL = 'gpt-5-nano';
 
 export const SEI_SYSTEM_PROMPT = `You are a copywriter for X and Threads. You write posts and threads for Sei Habits app promotion.
 

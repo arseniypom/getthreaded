@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { ExpandableText } from '@/components/expandable-text';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -13,7 +14,7 @@ import {
   useReactTable,
   VisibilityState,
 } from '@tanstack/react-table';
-import { ArrowUpDown, ChevronDown, ExternalLink } from 'lucide-react';
+import { ArrowUpDown, ChevronDown, ExternalLink, Trophy, Star } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -42,7 +43,7 @@ export interface ThreadsPostData {
   url: string | null;
 }
 
-export const columns: ColumnDef<ThreadsPostData>[] = [
+export const columns = (topPostIds: string[]): ColumnDef<ThreadsPostData>[] => [
   {
     accessorKey: 'text',
     header: 'Post Text',
@@ -51,14 +52,14 @@ export const columns: ColumnDef<ThreadsPostData>[] = [
       const url = row.original.url;
 
       return (
-        <div className="max-w-md">
-          <p className="text-sm line-clamp-3">{text || 'No text content'}</p>
+        <div className="max-w-md space-y-1">
+          <ExpandableText text={text} url={url} />
           {url && (
             <a
               href={url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 mt-1"
+              className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800"
             >
               View post <ExternalLink className="h-3 w-3" />
             </a>
@@ -83,7 +84,20 @@ export const columns: ColumnDef<ThreadsPostData>[] = [
     },
     cell: ({ row }) => {
       const likes = row.getValue('likes') as number;
-      return <div className="text-center font-medium">{likes.toLocaleString()}</div>;
+      const postId = row.original.id;
+      const topIndex = topPostIds.indexOf(postId);
+
+      return (
+        <div className="flex items-center justify-center gap-1">
+          {topIndex === 0 && (
+            <Trophy className="h-4 w-4 text-yellow-500" aria-label="Top post" />
+          )}
+          {topIndex === 1 && (
+            <Star className="h-4 w-4 text-gray-400" aria-label="Second best post" />
+          )}
+          <span className="font-medium">{likes.toLocaleString()}</span>
+        </div>
+      );
     },
   },
   {
@@ -161,9 +175,15 @@ export function ThreadsDataTable({ data }: ThreadsDataTableProps) {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
 
+  // Find top 2 posts by likes
+  const topPostIds = React.useMemo(() => {
+    const sortedByLikes = [...data].sort((a, b) => b.likes - a.likes);
+    return sortedByLikes.slice(0, 2).map(post => post.id);
+  }, [data]);
+
   const table = useReactTable({
     data,
-    columns,
+    columns: columns(topPostIds),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
