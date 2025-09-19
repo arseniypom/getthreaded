@@ -40,13 +40,17 @@ export async function POST(request: NextRequest) {
         { role: 'user', content: userPrompt }
       ],
       response_format: { type: 'json_object' },
-      temperature: longer ? 0.7 : 0.8, // Slightly lower temp for longer, more coherent content
-      max_tokens: multiPost ? 2000 : 800,
+      temperature: 1, // gpt-5-nano only supports default temperature
+      max_completion_tokens: multiPost ? 4000 : 1500, // Increased limits for model output
     });
 
     const content = completion.choices[0]?.message?.content;
 
     if (!content) {
+      // Check if the response was cut off due to token limit
+      if (completion.choices[0]?.finish_reason === 'length') {
+        throw new Error('Response was too long. Please try with a shorter idea or disable multi-post mode.');
+      }
       throw new Error('No content received from OpenAI');
     }
 
