@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import type { ThreadResponse, GenerateThreadRequest, ThreadPost } from '@/lib/types';
-import { SEI_SYSTEM_PROMPT, OPENAI_MODEL, MAX_CHAR_LIMIT } from '@/lib/constants';
+import { getSystemPrompt, OPENAI_MODEL, MAX_CHAR_LIMIT, SHORT_CHAR_LIMIT } from '@/lib/constants';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -26,17 +26,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const userPrompt = `Create a thread about: ${body.idea}`;
+    // Get the appropriate system prompt based on settings
+    const multiPost = body.multiPost ?? false;
+    const longer = body.longer ?? false;
+    const systemPrompt = getSystemPrompt(multiPost, longer);
+
+    const userPrompt = `Create a ${multiPost ? 'thread' : 'post'} about: ${body.idea}`;
 
     const completion = await openai.chat.completions.create({
       model: OPENAI_MODEL,
       messages: [
-        { role: 'system', content: SEI_SYSTEM_PROMPT },
+        { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt }
       ],
       response_format: { type: 'json_object' },
-      temperature: 0.8,
-      max_tokens: 2000,
+      temperature: longer ? 0.7 : 0.8, // Slightly lower temp for longer, more coherent content
+      max_tokens: multiPost ? 2000 : 800,
     });
 
     const content = completion.choices[0]?.message?.content;
@@ -53,9 +58,12 @@ export async function POST(request: NextRequest) {
       throw new Error('Invalid response format from AI');
     }
 
+    // Apply character limits based on settings
+    const charLimit = longer ? MAX_CHAR_LIMIT : SHORT_CHAR_LIMIT;
+
     const thread: ThreadPost[] = parsedResponse.thread.map((post: { id?: number; content: string }, index: number) => ({
       id: post.id || index + 1,
-      content: post.content.slice(0, MAX_CHAR_LIMIT),
+      content: post.content.slice(0, charLimit),
       characterCount: post.content.length,
     }));
 

@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { ThreadGenerator } from '@/components/thread-generator';
 import { ThreadDisplay } from '@/components/thread-display';
 import { useThreadGenerator } from '@/hooks/use-thread-generator';
@@ -13,6 +14,8 @@ import {
 } from '@/components/ui/breadcrumb';
 
 export default function Home() {
+  const [multiPost, setMultiPost] = useState(false);
+  const [longer, setLonger] = useState(false);
   const { posts, isLoading, error, generateThread, resetThread } = useThreadGenerator();
 
   return (
@@ -49,6 +52,10 @@ export default function Home() {
                 <ThreadGenerator
                   onGenerate={generateThread}
                   isLoading={isLoading}
+                  multiPost={multiPost}
+                  setMultiPost={setMultiPost}
+                  longer={longer}
+                  setLonger={setLonger}
                 />
               ) : (
                 <ThreadDisplay

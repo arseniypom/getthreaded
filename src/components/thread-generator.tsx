@@ -5,11 +5,17 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 import { Sparkles, Loader2 } from 'lucide-react';
 
 interface ThreadGeneratorProps {
-  onGenerate: (idea: string) => Promise<void>;
+  onGenerate: (idea: string, multiPost: boolean, longer: boolean) => Promise<void>;
   isLoading: boolean;
+  multiPost: boolean;
+  setMultiPost: (value: boolean) => void;
+  longer: boolean;
+  setLonger: (value: boolean) => void;
 }
 
 const placeholders = [
@@ -20,14 +26,21 @@ const placeholders = [
   "Understanding Web3 basics"
 ];
 
-export function ThreadGenerator({ onGenerate, isLoading }: ThreadGeneratorProps) {
+export function ThreadGenerator({
+  onGenerate,
+  isLoading,
+  multiPost,
+  setMultiPost,
+  longer,
+  setLonger
+}: ThreadGeneratorProps) {
   const [idea, setIdea] = useState('');
   const [placeholder, setPlaceholder] = useState("What's your idea?");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (idea.trim() && !isLoading) {
-      await onGenerate(idea);
+      await onGenerate(idea, multiPost, longer);
       setIdea('');
     }
   };
@@ -43,12 +56,20 @@ export function ThreadGenerator({ onGenerate, isLoading }: ThreadGeneratorProps)
         <CardContent className="p-6 space-y-4">
           <div className="flex items-center justify-center gap-2 text-primary">
             <Loader2 className="h-5 w-5 animate-spin" />
-            <span className="font-medium">Generating your thread...</span>
+            <span className="font-medium">
+              Generating your {multiPost ? 'thread' : 'post'}...
+            </span>
           </div>
           <div className="space-y-3">
-            <Skeleton className="h-24 w-full" />
-            <Skeleton className="h-24 w-full" />
-            <Skeleton className="h-24 w-full" />
+            {multiPost ? (
+              <>
+                <Skeleton className="h-24 w-full" />
+                <Skeleton className="h-24 w-full" />
+                <Skeleton className="h-24 w-full" />
+              </>
+            ) : (
+              <Skeleton className="h-32 w-full" />
+            )}
           </div>
         </CardContent>
       </Card>
@@ -72,8 +93,43 @@ export function ThreadGenerator({ onGenerate, isLoading }: ThreadGeneratorProps)
               autoFocus
             />
             <p className="text-xs text-muted-foreground mt-2">
-              Enter any topic or idea and we&apos;ll create a multi-post Thread for you
+              Enter any topic or idea and we&apos;ll create {multiPost ? 'a multi-post Thread' : 'a single post'} for you
             </p>
+          </div>
+
+          {/* Settings Switches */}
+          <div className="space-y-3 border-t pt-4">
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <Label htmlFor="multi-post" className="text-sm font-medium">
+                  Multi-post thread
+                </Label>
+                <p className="text-xs text-muted-foreground">
+                  Create a thread of multiple connected posts
+                </p>
+              </div>
+              <Switch
+                id="multi-post"
+                checked={multiPost}
+                onCheckedChange={setMultiPost}
+              />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <Label htmlFor="longer-format" className="text-sm font-medium">
+                  Longer format
+                </Label>
+                <p className="text-xs text-muted-foreground">
+                  {longer ? 'More detailed and explanatory' : 'Shorter and punchier'}
+                </p>
+              </div>
+              <Switch
+                id="longer-format"
+                checked={longer}
+                onCheckedChange={setLonger}
+              />
+            </div>
           </div>
 
           <Button
@@ -83,7 +139,7 @@ export function ThreadGenerator({ onGenerate, isLoading }: ThreadGeneratorProps)
             disabled={!idea.trim() || isLoading}
           >
             <Sparkles className="h-4 w-4" />
-            Generate Thread
+            Generate {multiPost ? 'Thread' : 'Post'}
           </Button>
         </form>
       </CardContent>

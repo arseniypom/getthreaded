@@ -3,13 +3,19 @@
 import { useMutation } from '@tanstack/react-query';
 import type { ThreadResponse } from '@/lib/types';
 
-async function generateThread(idea: string): Promise<ThreadResponse> {
+interface GenerateOptions {
+  idea: string;
+  multiPost: boolean;
+  longer: boolean;
+}
+
+async function generateThread({ idea, multiPost, longer }: GenerateOptions): Promise<ThreadResponse> {
   const response = await fetch('/api/generate-thread', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ idea }),
+    body: JSON.stringify({ idea, multiPost, longer }),
   });
 
   if (!response.ok) {
@@ -21,7 +27,7 @@ async function generateThread(idea: string): Promise<ThreadResponse> {
 }
 
 export function useThreadGenerator() {
-  const mutation = useMutation<ThreadResponse, Error, string>({
+  const mutation = useMutation<ThreadResponse, Error, GenerateOptions>({
     mutationFn: generateThread,
     onError: (error) => {
       console.error('Failed to generate thread:', error);
@@ -32,8 +38,8 @@ export function useThreadGenerator() {
   const isLoading = mutation.isPending;
   const error = mutation.error?.message || null;
 
-  const generateThreadAction = async (idea: string) => {
-    await mutation.mutateAsync(idea);
+  const generateThreadAction = async (idea: string, multiPost: boolean, longer: boolean) => {
+    await mutation.mutateAsync({ idea, multiPost, longer });
   };
 
   const resetThread = () => {

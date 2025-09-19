@@ -11,6 +11,8 @@ export interface ThreadResponse {
 
 export interface GenerateThreadRequest {
   idea: string;
+  multiPost?: boolean;
+  longer?: boolean;
 }
 
 export interface ApiError {
