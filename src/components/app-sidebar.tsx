@@ -3,7 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { TrendingUp, Plus, MessageSquare } from "lucide-react"
+import { TrendingUp, Plus, MessageSquare, Sparkles } from "lucide-react"
 
 import {
   Sidebar,
@@ -23,6 +23,11 @@ const data = {
     {
       title: "GetThreaded",
       items: [
+        {
+          title: "Strategy (start here)",
+          url: "/strategy",
+          icon: Sparkles,
+        },
         {
           title: "Create",
           url: "/",
