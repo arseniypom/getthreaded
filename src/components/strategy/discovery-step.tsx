@@ -40,7 +40,7 @@ const NICHE_ICONS: Record<Niche, React.ElementType> = {
 
 export function DiscoveryStep({ profile, onUpdate }: DiscoveryStepProps) {
   const [selectedNiches, setSelectedNiches] = useState<Niche[]>(() => {
-    const niches = []
+    const niches: Niche[] = []
     if (profile.niches?.primary) niches.push(profile.niches.primary)
     if (profile.niches?.secondary) niches.push(profile.niches.secondary)
     return niches

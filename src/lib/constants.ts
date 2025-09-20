@@ -1,4 +1,4 @@
-export const OPENAI_MODEL = 'gpt-5-nano';
+export const OPENAI_MODEL = 'gpt-4o-mini';
 
 export const MAX_THREAD_LENGTH = 7;
 export const MIN_THREAD_LENGTH = 3;

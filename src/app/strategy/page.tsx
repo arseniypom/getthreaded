@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
-import { Card, CardContent } from '@/components/ui/card'
 import { ArrowLeft, ArrowRight, CheckCircle2 } from 'lucide-react'
 import { UserProfile } from '@/lib/strategy-types'
 import { PersonalStep } from '@/components/strategy/personal-step'
@@ -12,7 +11,7 @@ import { FocusRefinementStep } from '@/components/strategy/focus-refinement-step
 import { VoiceStep } from '@/components/strategy/voice-step'
 import { AudienceDiscoveryStep } from '@/components/strategy/audience-discovery-step'
 import { BoundariesStep } from '@/components/strategy/boundaries-step'
-import { StrategyDashboard } from '@/components/strategy/strategy-dashboard'
+import { NewStrategyDashboard } from '@/components/strategy/new-strategy-dashboard'
 
 const TOTAL_STEPS = 6
 
@@ -73,12 +72,9 @@ export default function StrategyPage() {
     switch (currentStep) {
       case 1:
         return profile.personal?.name &&
-               profile.personal?.handle &&
+               (profile.personal?.handle || profile.personal?.handle === 'pending') &&
                profile.personal?.journeyStage &&
-               profile.personal?.workPreferences?.style &&
-               profile.personal?.workPreferences?.contentType &&
-               profile.personal?.workPreferences?.focus &&
-               profile.personal?.workPreferences?.creatorType
+               profile.personal?.goals?.primary
       case 2:
         return profile.niches?.primary
       case 3:
@@ -109,7 +105,7 @@ export default function StrategyPage() {
             Back to Setup
           </Button>
         </div>
-        <StrategyDashboard profile={profile as UserProfile} />
+        <NewStrategyDashboard profile={profile as UserProfile} />
       </div>
     )
   }
@@ -126,46 +122,44 @@ export default function StrategyPage() {
         <Progress value={progress} className="h-2" />
       </div>
 
-      <Card className="mb-6">
-        <CardContent className="p-6">
-          {currentStep === 1 && (
-            <PersonalStep
-              profile={profile}
-              onUpdate={updateProfile}
-            />
-          )}
-          {currentStep === 2 && (
-            <DiscoveryStep
-              profile={profile}
-              onUpdate={updateProfile}
-            />
-          )}
-          {currentStep === 3 && (
-            <FocusRefinementStep
-              profile={profile}
-              onUpdate={updateProfile}
-            />
-          )}
-          {currentStep === 4 && (
-            <VoiceStep
-              profile={profile}
-              onUpdate={updateProfile}
-            />
-          )}
-          {currentStep === 5 && (
-            <AudienceDiscoveryStep
-              profile={profile}
-              onUpdate={updateProfile}
-            />
-          )}
-          {currentStep === 6 && (
-            <BoundariesStep
-              profile={profile}
-              onUpdate={updateProfile}
-            />
-          )}
-        </CardContent>
-      </Card>
+      <div className="mb-6">
+        {currentStep === 1 && (
+          <PersonalStep
+            profile={profile}
+            onUpdate={updateProfile}
+          />
+        )}
+        {currentStep === 2 && (
+          <DiscoveryStep
+            profile={profile}
+            onUpdate={updateProfile}
+          />
+        )}
+        {currentStep === 3 && (
+          <FocusRefinementStep
+            profile={profile}
+            onUpdate={updateProfile}
+          />
+        )}
+        {currentStep === 4 && (
+          <VoiceStep
+            profile={profile}
+            onUpdate={updateProfile}
+          />
+        )}
+        {currentStep === 5 && (
+          <AudienceDiscoveryStep
+            profile={profile}
+            onUpdate={updateProfile}
+          />
+        )}
+        {currentStep === 6 && (
+          <BoundariesStep
+            profile={profile}
+            onUpdate={updateProfile}
+          />
+        )}
+      </div>
 
       <div className="flex justify-between">
         <Button

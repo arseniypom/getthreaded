@@ -1,7 +1,6 @@
 'use client'
 
 import { UserProfile, PILLAR_OPTIONS } from '@/lib/strategy-types'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Sparkles } from 'lucide-react'
@@ -77,15 +76,6 @@ export function FocusRefinementStep({ profile, onUpdate }: FocusRefinementStepPr
         </p>
       </div>
 
-      {selectedPillars.length > 0 && (
-        <div className="flex justify-center flex-wrap gap-2 mb-4">
-          {selectedPillars.map((pillar, index) => (
-            <Badge key={pillar} variant="default" className="px-3 py-1">
-              Pillar {index + 1}: {pillar}
-            </Badge>
-          ))}
-        </div>
-      )}
 
       <div className="space-y-3">
         {availablePillars.length > 0 ? (

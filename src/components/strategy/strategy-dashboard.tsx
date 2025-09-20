@@ -185,23 +185,20 @@ Drop it below and I&apos;ll share what&apos;s worked for me.
 
   const getQuickWinTactics = () => {
     const tactics = []
-    const timeCommitment = profile.personal?.workPreferences?.timeCommitment
-    const style = profile.personal?.workPreferences?.style
 
-    if (timeCommitment === '1-2' || timeCommitment === '3-5') {
+    // Default tactics based on journey stage
+    if (profile.personal?.journeyStage === 'just-starting') {
       tactics.push('Batch create on Sunday: Write 5 posts in one sitting')
       tactics.push('Use 60% evergreen, 40% timely content ratio')
     }
 
-    if (style === 'fast-scrappy') {
-      tactics.push('Voice notes → transcribe → quick edit workflow')
-    } else {
+    if (profile.personal?.journeyStage === 'building') {
       tactics.push('Create templates, fill in specific details')
+      tactics.push('Sunday prep, schedule entire week')
     }
 
-    if (profile.personal?.workPreferences?.creatorType === 'batch') {
-      tactics.push('Sunday prep, schedule entire week')
-    } else {
+    if (profile.personal?.journeyStage === 'scaling') {
+      tactics.push('Voice notes → transcribe → quick edit workflow')
       tactics.push('Morning coffee = content creation time')
     }
 
@@ -241,8 +238,8 @@ Drop it below and I&apos;ll share what&apos;s worked for me.
               <span>{getVoiceStyle()}</span>
             </div>
             <div className="flex justify-between">
-              <span className="font-medium">Time Investment:</span>
-              <span>{profile.personal?.workPreferences?.timeCommitment} hours/week</span>
+              <span className="font-medium">Timeframe:</span>
+              <span>{profile.personal?.goals?.timeframe?.replace('-', ' ')}</span>
             </div>
             <div className="flex justify-between">
               <span className="font-medium">Primary Focus:</span>
@@ -448,7 +445,7 @@ Drop it below and I&apos;ll share what&apos;s worked for me.
 
             <div className="pt-4 border-t">
               <p className="text-sm italic text-center">
-                Remember: You&apos;re {profile.personal?.workPreferences?.timeCommitment} hours/week committed.
+                Remember: You&apos;re on a {profile.personal?.goals?.timeframe?.replace('-', ' ')} journey.
                 Focus on consistency over perfection.
               </p>
             </div>

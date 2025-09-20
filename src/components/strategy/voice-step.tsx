@@ -240,15 +240,15 @@ export function VoiceStep({ profile, onUpdate }: VoiceStepProps) {
             >
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="never" id="emoji-never" />
-                <Label htmlFor="emoji-never">Never</Label>
+                <Label htmlFor="emoji-never">Never use emojis</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="strategic" id="emoji-strategic" />
-                <Label htmlFor="emoji-strategic">Strategic</Label>
+                <Label htmlFor="emoji-strategic">Use strategically</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="liberally" id="emoji-liberally" />
-                <Label htmlFor="emoji-liberally">Liberally</Label>
+                <Label htmlFor="emoji-liberally">Use freely</Label>
               </div>
             </RadioGroup>
           </div>
@@ -261,19 +261,19 @@ export function VoiceStep({ profile, onUpdate }: VoiceStepProps) {
             >
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="dry-wit" id="humor-dry" />
-                <Label htmlFor="humor-dry">Dry wit</Label>
+                <Label htmlFor="humor-dry">Dry, subtle wit</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="self-deprecating" id="humor-self" />
-                <Label htmlFor="humor-self">Self-deprecating</Label>
+                <Label htmlFor="humor-self">Self-deprecating humor</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="observational" id="humor-obs" />
-                <Label htmlFor="humor-obs">Observational</Label>
+                <Label htmlFor="humor-obs">Observational comedy</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="none" id="humor-none" />
-                <Label htmlFor="humor-none">None</Label>
+                <Label htmlFor="humor-none">No humor</Label>
               </div>
             </RadioGroup>
           </div>
@@ -286,15 +286,15 @@ export function VoiceStep({ profile, onUpdate }: VoiceStepProps) {
             >
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="avoid" id="controversy-avoid" />
-                <Label htmlFor="controversy-avoid">Avoid</Label>
+                <Label htmlFor="controversy-avoid">Avoid controversial topics</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="careful" id="controversy-careful" />
-                <Label htmlFor="controversy-careful">Careful</Label>
+                <Label htmlFor="controversy-careful">Careful with controversy</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="embrace" id="controversy-embrace" />
-                <Label htmlFor="controversy-embrace">Embrace</Label>
+                <Label htmlFor="controversy-embrace">Embrace controversy</Label>
               </div>
             </RadioGroup>
           </div>
@@ -307,15 +307,15 @@ export function VoiceStep({ profile, onUpdate }: VoiceStepProps) {
             >
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="private" id="sharing-private" />
-                <Label htmlFor="sharing-private">Private</Label>
+                <Label htmlFor="sharing-private">Keep it private</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="selective" id="sharing-selective" />
-                <Label htmlFor="sharing-selective">Selective</Label>
+                <Label htmlFor="sharing-selective">Share selectively</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="open-book" id="sharing-open" />
-                <Label htmlFor="sharing-open">Open book</Label>
+                <Label htmlFor="sharing-open">Open book approach</Label>
               </div>
             </RadioGroup>
           </div>
@@ -328,15 +328,15 @@ export function VoiceStep({ profile, onUpdate }: VoiceStepProps) {
             >
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="soft-nudge" id="cta-soft" />
-                <Label htmlFor="cta-soft">Soft nudge</Label>
+                <Label htmlFor="cta-soft">Gentle suggestions</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="direct-ask" id="cta-direct" />
-                <Label htmlFor="cta-direct">Direct ask</Label>
+                <Label htmlFor="cta-direct">Direct requests</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="let-them-come" id="cta-passive" />
-                <Label htmlFor="cta-passive">Let them come</Label>
+                <Label htmlFor="cta-passive">Let them come naturally</Label>
               </div>
             </RadioGroup>
           </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import { UserProfile, GenderMix, DailyReality, PainPoint, Aspiration, ScrollTime, Platform, ConsumptionStyle } from '@/lib/strategy-types'
+import { UserProfile, GenderMix, DailyReality, PainPoint, Aspiration } from '@/lib/strategy-types'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -10,9 +10,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { useState } from 'react'
 import {
   Target, Users, GraduationCap, Briefcase, Heart, Gamepad2, Building,
-  Palette, Clock, Coffee, Sun, Moon, Sunset,
-  Linkedin, Instagram, Twitter, Youtube, Mail,
-  Eye, Book, Video, MessageSquare
+  Palette
 } from 'lucide-react'
 
 interface AudienceDiscoveryStepProps {
@@ -40,20 +38,6 @@ export function AudienceDiscoveryStep({ profile, onUpdate }: AudienceDiscoverySt
   const [aspirations, setAspirations] = useState<Aspiration[]>(
     profile.audience?.psychographics?.aspirations || []
   )
-  const [scrollTimes, setScrollTimes] = useState<ScrollTime[]>(
-    profile.audience?.behavior?.scrollTimes || []
-  )
-  const [platforms, setPlatforms] = useState<Platform[]>(
-    profile.audience?.behavior?.platforms || []
-  )
-  const [consumptionStyle, setConsumptionStyle] = useState<ConsumptionStyle>(
-    profile.audience?.behavior?.consumptionStyle || 'speed-scanner'
-  )
-  const [validations, setValidations] = useState({
-    noBuy: '',
-    keepingUp: '',
-    wouldPay: ''
-  })
 
   const updateProfile = () => {
     onUpdate({
@@ -67,11 +51,6 @@ export function AudienceDiscoveryStep({ profile, onUpdate }: AudienceDiscoverySt
           dailyReality: dailyRealities,
           painPoints,
           aspirations
-        },
-        behavior: {
-          scrollTimes,
-          platforms,
-          consumptionStyle
         }
       }
     })
@@ -108,30 +87,6 @@ export function AudienceDiscoveryStep({ profile, onUpdate }: AudienceDiscoverySt
     { id: 'impact' as Aspiration, label: 'Impact & meaning' }
   ]
 
-  const scrollTimeOptions = [
-    { id: 'early-bird' as ScrollTime, icon: Sun, label: 'Early bird (5-8am)' },
-    { id: 'commute' as ScrollTime, icon: Coffee, label: 'Commute time (8-9am)' },
-    { id: 'lunch' as ScrollTime, icon: Clock, label: 'Lunch break (12-1pm)' },
-    { id: 'afternoon-slump' as ScrollTime, icon: Sunset, label: 'Afternoon slump (3-4pm)' },
-    { id: 'evening' as ScrollTime, icon: Moon, label: 'Evening wind-down (8-11pm)' },
-    { id: 'night-owl' as ScrollTime, icon: Moon, label: 'Night owl (11pm+)' }
-  ]
-
-  const platformOptions = [
-    { id: 'linkedin' as Platform, icon: Linkedin, label: 'LinkedIn: Professional networking' },
-    { id: 'instagram' as Platform, icon: Instagram, label: 'Instagram: Visual inspiration' },
-    { id: 'twitter' as Platform, icon: Twitter, label: 'X/Twitter: Real-time thoughts' },
-    { id: 'tiktok' as Platform, icon: Video, label: 'TikTok: Entertainment' },
-    { id: 'youtube' as Platform, icon: Youtube, label: 'YouTube: Deep learning' },
-    { id: 'newsletter' as Platform, icon: Mail, label: 'Newsletter: Curated content' }
-  ]
-
-  const consumptionOptions = [
-    { id: 'speed-scanner' as ConsumptionStyle, icon: Eye, label: 'Speed Scanner', desc: 'Needs hooks, bullets, summaries' },
-    { id: 'deep-diver' as ConsumptionStyle, icon: Book, label: 'Deep Diver', desc: 'Loves long-form, detailed content' },
-    { id: 'visual-learner' as ConsumptionStyle, icon: Video, label: 'Visual Learner', desc: 'Prefers video, graphics, demos' },
-    { id: 'community-seeker' as ConsumptionStyle, icon: MessageSquare, label: 'Community Seeker', desc: 'Wants discussion, interaction' }
-  ]
 
   const toggleArrayItem = <T extends string>(
     array: T[],
@@ -289,125 +244,6 @@ export function AudienceDiscoveryStep({ profile, onUpdate }: AudienceDiscoverySt
                 )
               })}
             </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Section 3: Behavioral Insights</CardTitle>
-          <CardDescription>Where & How They Show Up</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div>
-            <Label className="mb-3 block">When are they scrolling?</Label>
-            <div className="grid grid-cols-2 gap-2">
-              {scrollTimeOptions.map(option => {
-                const Icon = option.icon
-                const isSelected = scrollTimes.includes(option.id)
-                return (
-                  <Button
-                    key={option.id}
-                    variant={isSelected ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => toggleArrayItem(scrollTimes, setScrollTimes, option.id, 6)}
-                    className="justify-start"
-                  >
-                    <Icon className="mr-2 h-4 w-4" />
-                    {option.label}
-                  </Button>
-                )
-              })}
-            </div>
-          </div>
-
-          <div>
-            <Label className="mb-3 block">Platform Behavior (rank by importance)</Label>
-            <div className="space-y-2">
-              {platformOptions.map(option => {
-                const Icon = option.icon
-                const isSelected = platforms.includes(option.id)
-                return (
-                  <Button
-                    key={option.id}
-                    variant={isSelected ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => toggleArrayItem(platforms, setPlatforms, option.id, 6)}
-                    className="w-full justify-start"
-                  >
-                    <Icon className="mr-2 h-4 w-4" />
-                    {option.label}
-                  </Button>
-                )
-              })}
-            </div>
-          </div>
-
-          <div>
-            <Label className="mb-3 block">Content Consumption Style</Label>
-            <div className="grid grid-cols-2 gap-2">
-              {consumptionOptions.map(option => {
-                const Icon = option.icon
-                return (
-                  <Card
-                    key={option.id}
-                    className={`cursor-pointer transition-all ${
-                      consumptionStyle === option.id ? 'ring-2 ring-primary' : ''
-                    }`}
-                    onClick={() => {
-                      setConsumptionStyle(option.id)
-                      updateProfile()
-                    }}
-                  >
-                    <CardContent className="p-3">
-                      <div className="flex items-start space-x-2">
-                        <Icon className="h-5 w-5 mt-1" />
-                        <div>
-                          <p className="font-medium text-sm">{option.label}</p>
-                          <p className="text-xs text-muted-foreground">{option.desc}</p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                )
-              })}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Quick Check - Do You Really Know Them?</CardTitle>
-          <CardDescription>Fill in the blanks</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="no-buy">My audience would never buy from someone who ______</Label>
-            <Input
-              id="no-buy"
-              value={validations.noBuy}
-              onChange={(e) => setValidations({ ...validations, noBuy: e.target.value })}
-              placeholder="e.g., uses too much jargon, seems fake..."
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="keeping-up">The #1 thing keeping them up at night is ______</Label>
-            <Input
-              id="keeping-up"
-              value={validations.keepingUp}
-              onChange={(e) => setValidations({ ...validations, keepingUp: e.target.value })}
-              placeholder="e.g., money worries, career uncertainty..."
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="would-pay">They&apos;d pay $1000 right now to solve ______</Label>
-            <Input
-              id="would-pay"
-              value={validations.wouldPay}
-              onChange={(e) => setValidations({ ...validations, wouldPay: e.target.value })}
-              placeholder="e.g., time management, consistent income..."
-            />
           </div>
         </CardContent>
       </Card>

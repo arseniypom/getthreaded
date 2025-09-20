@@ -1,9 +1,4 @@
 export type JourneyStage = 'just-starting' | 'building' | 'scaling' | 'pivoting'
-export type WorkStyle = 'fast-scrappy' | 'polished-perfect'
-export type ContentStyle = 'written' | 'video-first'
-export type FocusStyle = 'niche-focused' | 'multi-passionate'
-export type CreatorStyle = 'batch' | 'daily'
-export type TimeCommitment = '1-2' | '3-5' | '5-10' | '10+'
 
 export type VoiceQuadrant = {
   casual: number // 0-100
@@ -61,21 +56,6 @@ export type Aspiration =
   | 'connection'
   | 'impact'
 
-export type ScrollTime =
-  | 'early-bird'
-  | 'commute'
-  | 'lunch'
-  | 'afternoon-slump'
-  | 'evening'
-  | 'night-owl'
-
-export type ConsumptionStyle =
-  | 'speed-scanner'
-  | 'deep-diver'
-  | 'visual-learner'
-  | 'community-seeker'
-
-export type Platform = 'linkedin' | 'instagram' | 'twitter' | 'tiktok' | 'youtube' | 'newsletter'
 
 export const NICHE_OPTIONS = [
   'Mindset & Discipline',
@@ -205,6 +185,8 @@ export const PILLAR_OPTIONS: Record<Niche, string[]> = {
   ]
 }
 
+export type Timeframe = '1-month' | '3-months' | '6-months'
+
 export interface UserProfile {
   // Step 1: Personal
   personal: {
@@ -212,12 +194,10 @@ export interface UserProfile {
     handle: string
     journeyStage: JourneyStage
     context?: string
-    workPreferences: {
-      style: WorkStyle
-      contentType: ContentStyle
-      focus: FocusStyle
-      creatorType: CreatorStyle
-      timeCommitment: TimeCommitment
+    goals?: {
+      primary: string
+      secondary?: string
+      timeframe: Timeframe
     }
   }
 
@@ -255,11 +235,6 @@ export interface UserProfile {
       painPoints: PainPoint[]
       aspirations: Aspiration[]
     }
-    behavior: {
-      scrollTimes: ScrollTime[]
-      platforms: Platform[]
-      consumptionStyle: ConsumptionStyle
-    }
   }
 
   // Step 6: Boundaries
@@ -281,6 +256,62 @@ export interface UserProfile {
       noMedicalClaims?: boolean
     }
   }
+}
+
+export interface GeneratedStrategy {
+  aboutMe: {
+    mainGoal: string
+    secondaryGoal?: string
+    mission: string
+    values: string[]
+  }
+  aboutAudience: {
+    pains: string[]
+    desires: string[]
+    portraits: {
+      name: string
+      description: string
+    }[]
+  }
+  personalInsights: string[]
+  postingStrategy: {
+    actions: {
+      priority: number
+      action: string
+    }[]
+    weeklyStrategy: {
+      weeks: string
+      focus: string
+    }[]
+    weeklySchedule: {
+      day: string
+      pillar: string
+      postType: string
+    }[]
+  }
+  posts: {
+    pillars: string[]
+    templates: PostTemplate[]
+  }
+  tipsAndTricks: {
+    personalized: string[]
+    general: string[]
+  }
+  personalChallenge: {
+    description: string
+    steps: string[]
+    expectedResults: string
+  }
+}
+
+export interface PostTemplate {
+  id: string
+  name: string
+  structure: string
+  examples: {
+    title: string
+    content: string
+  }[]
 }
 
 export interface StrategyDashboard {
