@@ -7,7 +7,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { UserProfile, JourneyStage, Timeframe } from '@/lib/strategy-types'
 import { Card, CardContent } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Sprout, Rocket, TrendingUp, RefreshCw, Target, Flag } from 'lucide-react'
+import { Sprout, Rocket, TrendingUp, RefreshCw, Target } from 'lucide-react'
 import { useState } from 'react'
 
 interface PersonalStepProps {
@@ -22,7 +22,6 @@ export function PersonalStep({ profile, onUpdate }: PersonalStepProps) {
   const [context, setContext] = useState(profile.personal?.context || '')
   const [journeyStage, setJourneyStage] = useState<JourneyStage | undefined>(profile.personal?.journeyStage)
   const [primaryGoal, setPrimaryGoal] = useState(profile.personal?.goals?.primary || '')
-  const [secondaryGoal, setSecondaryGoal] = useState(profile.personal?.goals?.secondary || '')
   const [timeframe, setTimeframe] = useState<Timeframe>(profile.personal?.goals?.timeframe || '3-months')
 
   const handleUpdate = (overrides?: Partial<{
@@ -32,7 +31,6 @@ export function PersonalStep({ profile, onUpdate }: PersonalStepProps) {
     journeyStage: JourneyStage | undefined;
     context: string;
     primaryGoal: string;
-    secondaryGoal: string;
     timeframe: Timeframe;
   }>) => {
     const nextName = overrides?.name ?? name
@@ -41,7 +39,6 @@ export function PersonalStep({ profile, onUpdate }: PersonalStepProps) {
     const nextJourneyStage = overrides?.journeyStage ?? journeyStage
     const nextContext = overrides?.context ?? context
     const nextPrimaryGoal = overrides?.primaryGoal ?? primaryGoal
-    const nextSecondaryGoal = overrides?.secondaryGoal ?? secondaryGoal
     const nextTimeframe = overrides?.timeframe ?? timeframe
 
     onUpdate({
@@ -52,7 +49,6 @@ export function PersonalStep({ profile, onUpdate }: PersonalStepProps) {
         context: nextContext,
         goals: nextPrimaryGoal ? {
           primary: nextPrimaryGoal,
-          secondary: nextSecondaryGoal || undefined,
           timeframe: nextTimeframe
         } : undefined
       }
@@ -161,24 +157,6 @@ export function PersonalStep({ profile, onUpdate }: PersonalStepProps) {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="context">What brought you here? (Optional)</Label>
-                <Textarea
-                  id="context"
-                  value={context}
-                  onChange={(e) => {
-                    if (e.target.value.length <= 280) {
-                      setContext(e.target.value)
-                      handleUpdate({ context: e.target.value })
-                    }
-                  }}
-                  placeholder="e.g., Want to grow my coaching business, tired of posting without results..."
-                  className="min-h-[80px]"
-                />
-                <p className="text-sm text-muted-foreground text-right">
-                  {context.length}/280 characters
-                </p>
-              </div>
             </div>
           </div>
 
@@ -186,6 +164,24 @@ export function PersonalStep({ profile, onUpdate }: PersonalStepProps) {
             <h3 className="text-lg font-semibold mb-4">Section 3: Your Goals</h3>
 
             <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="context">What brought you here?</Label>
+                <p className="text-sm text-muted-foreground">
+                Your current situation, problems you&apos;d like to solve, what did you try before? The more details you provide, the better result you&apos;ll get ✨
+                </p>
+                <Textarea
+                  id="context"
+                  value={context}
+                  onChange={(e) => {
+                    setContext(e.target.value)
+                    handleUpdate({ context: e.target.value })
+                  }}
+                  placeholder="e.g., Want to grow my coaching business, tired of posting without results..."
+                  className="min-h-[80px]"
+                />
+
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="primary-goal" className="flex items-center gap-2">
                   <Target className="h-4 w-4" />
@@ -198,30 +194,8 @@ export function PersonalStep({ profile, onUpdate }: PersonalStepProps) {
                     setPrimaryGoal(e.target.value)
                     handleUpdate({ primaryGoal: e.target.value })
                   }}
-                  placeholder="e.g., Get 10 coaching clients, Build authority, Launch course"
+                  placeholder="e.g., Get 10 coaching clients, Launch course, Get 1000 followers"
                 />
-                <p className="text-sm text-muted-foreground">
-                  What&apos;s your primary objective for your social media presence?
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="secondary-goal" className="flex items-center gap-2">
-                  <Flag className="h-4 w-4" />
-                  Secondary Goal (Optional)
-                </Label>
-                <Input
-                  id="secondary-goal"
-                  value={secondaryGoal}
-                  onChange={(e) => {
-                    setSecondaryGoal(e.target.value)
-                    handleUpdate({ secondaryGoal: e.target.value })
-                  }}
-                  placeholder="e.g., Build email list, Network with peers"
-                />
-                <p className="text-sm text-muted-foreground">
-                  A supporting goal that complements your main objective
-                </p>
               </div>
 
               <div className="space-y-2">

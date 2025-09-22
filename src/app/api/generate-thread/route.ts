@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
         { role: 'user', content: userPrompt }
       ],
       response_format: { type: 'json_object' },
-      temperature: 1, // gpt-5-nano only supports default temperature
+      temperature: 1, // Default temperature for consistency
       max_completion_tokens: multiPost ? 4000 : 1500, // Increased limits for model output
     });
 

@@ -193,10 +193,9 @@ export interface UserProfile {
     name: string
     handle: string
     journeyStage: JourneyStage
-    context?: string
+    context: string
     goals?: {
       primary: string
-      secondary?: string
       timeframe: Timeframe
     }
   }
@@ -261,7 +260,6 @@ export interface UserProfile {
 export interface GeneratedStrategy {
   aboutMe: {
     mainGoal: string
-    secondaryGoal?: string
     mission: string
     values: string[]
   }

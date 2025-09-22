@@ -8,11 +8,15 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  fallback: ["system-ui", "Arial", "sans-serif"],
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  fallback: ["ui-monospace", "SFMono-Regular", "Monaco", "Consolas", "monospace"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {

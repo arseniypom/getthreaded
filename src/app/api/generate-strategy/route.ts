@@ -21,14 +21,13 @@ export async function POST(request: Request) {
       )
     }
 
-    const systemPrompt = `You are an expert social media strategist specializing in creating personalized content strategies. Generate a comprehensive strategy based on the user profile provided. Be specific, actionable, and personalized.`
+    const systemPrompt = `You are an expert social media strategist specializing in creator's profile analysis and creating personalized content strategies. Generate a comprehensive strategy based on the user profile provided. Be specific, actionable, and personalized.`
 
     const userPrompt = `Generate a personalized content strategy as a JSON object with this exact structure:
 
 {
   "aboutMe": {
     "mainGoal": "${profile.personal?.goals?.primary || 'Build authority'}",
-    "secondaryGoal": "${profile.personal?.goals?.secondary || ''}",
     "mission": "Generate mission statement based on profile",
     "values": ["value1", "value2", "value3"]
   },
@@ -115,9 +114,8 @@ Generate specific, actionable content based on this profile. Be creative and per
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt }
       ],
-      temperature: 1, // Default temperature for consistency with generate-thread
-      response_format: { type: 'json_object' },
-      max_completion_tokens: 4000
+      temperature: 1, // Default temperature for consistency
+      response_format: { type: 'json_object' }
     })
 
     const content = completion.choices[0]?.message?.content
@@ -173,7 +171,6 @@ Generate specific, actionable content based on this profile. Be creative and per
     const fallbackStrategy: GeneratedStrategy = {
       aboutMe: {
         mainGoal: profile?.personal?.goals?.primary || 'Build your online presence',
-        secondaryGoal: profile?.personal?.goals?.secondary,
         mission: `Help ${profile?.audience?.psychographics?.dailyReality?.[0]?.replace('-', ' ') || 'professionals'} achieve their goals through ${profile?.pillars?.[0] || 'valuable content'}`,
         values: ['Authenticity', 'Value', 'Consistency']
       },

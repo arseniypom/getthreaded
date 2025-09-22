@@ -39,11 +39,22 @@ A 6-step wizard that collects user information to generate a personalized conten
 | 📈 TrendingUp | scaling | Ready to Scale | "I'm consistent, need to level up" |
 | 🔄 RefreshCw | pivoting | Pivoting/Rebranding | "Time for something new" |
 
-**What brought you here?** (Optional)
+
+### Section 3: Goals
+
+**What brought you here?** (Required)
 - Textarea
 - Placeholder: "e.g., Want to grow my coaching business, tired of posting without results..."
 - Character limit: 280 (with counter)
 
+**What's your primary goal?** (Required)
+- Input field
+- Placeholder: "e.g., Build authority, Grow audience, Drive sales"
+
+**What's your timeframe?** (Required - Radio buttons)
+- 1-month: "Quick wins and momentum"
+- 3-months: "Build solid foundation"
+- 6-months: "Long-term growth strategy"
 
 ---
 
