@@ -4,62 +4,73 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Development Commands
 
-- `npm run dev` - Start development server with Turbopack (opens http://localhost:3000)
+- `npm run dev` - Start development server with Turbopack (http://localhost:3000)
 - `npm run build` - Build production version with Turbopack
 - `npm start` - Start production server
 - `npm run lint` - Run ESLint
 
-## Project Architecture
+## Project Overview
 
-GetThreaded is a Next.js 15 application that generates multi-post social media threads using OpenAI's API. The app uses the App Router architecture with TypeScript.
+GetThreaded is a Next.js 15 application with three main features:
+1. **Thread Generation**: Creates multi-post social media threads using OpenAI's API
+2. **Threads Scraping**: Scrapes posts from Threads.net profiles using Playwright
+3. **Strategy Generation**: Creates personalized content strategies based on user profiles
 
-### Key Components Structure
+## Architecture
 
-- **Main Page** (`src/app/page.tsx`): Client component that conditionally renders either the thread generator or thread display based on state
-- **Thread Generator** (`src/components/thread-generator.tsx`): Form component for user input with loading states and placeholder examples
-- **Thread Display** (`src/components/thread-display.tsx`): Shows generated thread posts with copy/reset functionality
-- **API Route** (`src/app/api/generate-thread/route.ts`): Handles OpenAI integration with proper error handling and response formatting
+### Core Features
 
-### Data Flow
+**Thread Generation** (`/`)
+- Uses OpenAI GPT-5-nano model for content generation
+- Supports single post (280/500 chars) or multi-post threads (3-7 posts)
+- Dynamic prompts based on post length and multi-post settings
 
-1. User enters idea in ThreadGenerator component
-2. `useThreadGenerator` hook manages state and API calls via React Query
-3. API route calls OpenAI with system prompt from constants
-4. Response is parsed and validated, then displayed in ThreadDisplay
+**Threads Scraper** (`/insights`)
+- Browser automation with Playwright for Threads.net scraping
+- Security layers: rate limiting, resource management, URL validation
+- Caching with NodeCache for performance
+- Anti-detection measures for reliable scraping
+
+**Strategy Generator** (`/strategy`)
+- Multi-step wizard for profile creation
+- Generates comprehensive content strategies via OpenAI
+- Includes posting schedules, templates, and personalized tips
+
+### API Routes
+
+- `/api/generate-thread`: Thread content generation
+- `/api/scrape-threads`: Threads.net profile scraping with security controls
+- `/api/generate-strategy/*`: Multiple endpoints for strategy components
+  - `about-me`, `about-audience`, `challenge`, `insights`, `tips`, `posting-strategy`, `post-templates`
+
+### Security Architecture
+
+- **Rate Limiting**: IP-based and global limits using rate-limiter-flexible
+- **Resource Management**: Controls concurrent operations and system capacity
+- **URL Validation**: Strict validation for Threads.net URLs only
+- **Error Handling**: Centralized security event logging and safe error responses
+- **Middleware**: Request validation and security headers
 
 ### Tech Stack
 
-- **Framework**: Next.js 15 with App Router and Turbopack
-- **Styling**: Tailwind CSS v4 with CSS variables
-- **UI Components**: Shadcn/ui with New York style variant
-- **State Management**: TanStack Query for server state
-- **AI Integration**: OpenAI SDK for thread generation
-- **Icons**: Lucide React
+- **Framework**: Next.js 15 with App Router
+- **Language**: TypeScript with strict mode
+- **Styling**: Tailwind CSS v4
+- **UI**: Shadcn/ui components (New York style)
+- **State**: TanStack Query for server state
+- **AI**: OpenAI SDK (GPT-5-nano model)
+- **Scraping**: Playwright for browser automation
+- **Validation**: Zod schemas
 
-### Configuration
+### Environment Variables
 
-- **Shadcn/ui**: Configured in `components.json` with New York style, RSC enabled, path aliases set up
-- **TypeScript**: Strict mode enabled with path mapping (`@/*` -> `./src/*`)
-- **Environment**: Requires `OPENAI_API_KEY` in `.env.local`
+Required in `.env.local`:
+- `OPENAI_API_KEY`: OpenAI API key for content generation
 
-### File Organization
+### Key Implementation Details
 
-```
-src/
-├── app/                 # Next.js App Router
-│   ├── api/            # API routes
-│   ├── globals.css     # Global styles with Tailwind
-│   └── providers.tsx   # Query Client provider
-├── components/
-│   ├── ui/             # Shadcn/ui components
-│   └── [feature].tsx   # Feature components
-├── hooks/              # Custom React hooks
-└── lib/                # Utilities, types, constants
-```
-
-### Important Patterns
-
-- All client components explicitly marked with `'use client'`
-- API routes use proper TypeScript interfaces from `@/lib/types`
-- Error handling implemented at both API and component levels
-- Character limits and system prompts defined in `@/lib/constants`
+- Client components use `'use client'` directive
+- API routes return proper TypeScript interfaces
+- Character limits: 280 (short) / 500 (long) characters per post
+- Threads scraper includes anti-detection and rate limiting
+- Strategy generation uses structured JSON responses from OpenAI

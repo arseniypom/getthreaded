@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: getthreaded-app-dev
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - MONGODB_URI=mongodb://mongodb:27017/getthreaded
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - mongodb
+    networks:
+      - getthreaded-network
+    restart: unless-stopped
+    command: npm run dev
+
+  mongodb:
+    image: mongo:7.0-jammy
+    container_name: getthreaded-mongodb-dev
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=getthreaded
+    volumes:
+      - mongodb-data-dev:/data/db
+      - mongodb-config-dev:/data/configdb
+    networks:
+      - getthreaded-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+networks:
+  getthreaded-network:
+    driver: bridge
+
+volumes:
+  mongodb-data-dev:
+    driver: local
+  mongodb-config-dev:
+    driver: local
