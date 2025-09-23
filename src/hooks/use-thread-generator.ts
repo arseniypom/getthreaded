@@ -37,6 +37,7 @@ export function useThreadGenerator() {
   const posts = mutation.data?.thread || [];
   const isLoading = mutation.isPending;
   const error = mutation.error?.message || null;
+  const generationId = mutation.data?.generationId;
 
   const generateThreadAction = async (idea: string, multiPost: boolean, longer: boolean) => {
     await mutation.mutateAsync({ idea, multiPost, longer });
@@ -50,6 +51,7 @@ export function useThreadGenerator() {
     posts,
     isLoading,
     error,
+    generationId,
     generateThread: generateThreadAction,
     resetThread,
   };

@@ -16,7 +16,7 @@ import {
 export default function Home() {
   const [multiPost, setMultiPost] = useState(false);
   const [longer, setLonger] = useState(false);
-  const { posts, isLoading, error, generateThread, resetThread } = useThreadGenerator();
+  const { posts, isLoading, error, generationId, generateThread, resetThread } = useThreadGenerator();
 
   return (
     <>
@@ -60,6 +60,7 @@ export default function Home() {
               ) : (
                 <ThreadDisplay
                   posts={posts}
+                  generationId={generationId}
                   onReset={resetThread}
                 />
               )}

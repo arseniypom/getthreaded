@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import type { ThreadResponse, GenerateThreadRequest, ThreadPost } from '@/lib/types';
 import { getSystemPrompt, OPENAI_MODEL, MAX_CHAR_LIMIT, SHORT_CHAR_LIMIT } from '@/lib/constants';
+import connectToDatabase from '@/lib/mongodb';
+import ThreadGeneration from '@/lib/models/thread-generation';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -71,9 +73,35 @@ export async function POST(request: NextRequest) {
       characterCount: post.content.length,
     }));
 
+    // Save to database
+    await connectToDatabase();
+
+    const totalCharacterCount = thread.reduce((acc, post) => acc + post.characterCount, 0);
+
+    const savedGeneration = await ThreadGeneration.create({
+      input: {
+        idea: body.idea,
+        multiPost: multiPost,
+        longer: longer,
+      },
+      output: {
+        thread,
+        totalPosts: thread.length,
+      },
+      metadata: {
+        model: OPENAI_MODEL,
+        characterCount: totalCharacterCount,
+      },
+      feedback: {
+        liked: null,
+        likedAt: null,
+      },
+    });
+
     const response: ThreadResponse = {
       thread,
       totalPosts: thread.length,
+      generationId: savedGeneration._id.toString(),
     };
 
     return NextResponse.json(response, { status: 200 });

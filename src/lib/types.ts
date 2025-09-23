@@ -7,6 +7,7 @@ export interface ThreadPost {
 export interface ThreadResponse {
   thread: ThreadPost[];
   totalPosts: number;
+  generationId?: string;
 }
 
 export interface GenerateThreadRequest {
