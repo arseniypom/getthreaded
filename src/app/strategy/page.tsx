@@ -87,9 +87,7 @@ export default function StrategyPage() {
   }
 
   const handleBack = () => {
-    if (showDashboard) {
-      setShowDashboard(false)
-    } else if (currentStep > 1) {
+    if (currentStep > 1) {
       setCurrentStep(currentStep - 1)
     }
   }
@@ -130,16 +128,6 @@ export default function StrategyPage() {
   if (showDashboard) {
     return (
       <div className="container max-w-6xl mx-auto py-8">
-        <div className="mb-6">
-          <Button
-            variant="outline"
-            onClick={handleBack}
-            className="mb-4"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Setup
-          </Button>
-        </div>
         <Suspense fallback={<div className="flex items-center justify-center py-12"><Loader2 className="h-6 w-6 animate-spin" /></div>}>
           <NewStrategyDashboard profile={profile as UserProfile} />
         </Suspense>

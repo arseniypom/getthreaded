@@ -1,6 +1,7 @@
 'use client'
 
-import { UserProfile } from '@/lib/strategy-types'
+import { useEffect, useState, useCallback } from 'react'
+import { UserProfile, GeneratedStrategy } from '@/lib/strategy-types'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -21,20 +22,96 @@ interface NewStrategyDashboardProps {
 
 export function NewStrategyDashboard({ profile }: NewStrategyDashboardProps) {
   const queries = useGenerateFullStrategy(profile)
+  const [saveState, setSaveState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
+  const [saveError, setSaveError] = useState<string | null>(null)
 
   // Check if any queries are loading
   const isAnyLoading = Object.values(queries).some(q => q.isLoading)
+
+  // Check if all queries have successful data
+  const allQueriesSuccessful = Object.values(queries).every(q => q.data && !q.error && !q.isLoading)
+
+  const saveStrategy = useCallback(async () => {
+    if (!allQueriesSuccessful) return
+
+    try {
+      setSaveState('saving')
+      setSaveError(null)
+
+      // Construct the complete generated strategy object
+      const generatedStrategy: GeneratedStrategy = {
+        aboutMe: queries.aboutMe.data!,
+        aboutAudience: queries.aboutAudience.data!,
+        personalInsights: queries.insights.data!,
+        postingStrategy: queries.postingStrategy.data!,
+        posts: queries.posts.data!,
+        tipsAndTricks: queries.tips.data!,
+        personalChallenge: queries.challenge.data!
+      }
+
+      const response = await fetch('/api/save-strategy', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userProfile: profile,
+          generatedStrategy
+        })
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.message || 'Failed to save strategy')
+      }
+
+      setSaveState('saved')
+    } catch (error) {
+      console.error('Error saving strategy:', error)
+      setSaveState('error')
+      setSaveError(error instanceof Error ? error.message : 'Failed to save strategy')
+    }
+  }, [allQueriesSuccessful, profile, queries])
+
+  // Save strategy to database when all data is loaded
+  useEffect(() => {
+    if (allQueriesSuccessful && saveState === 'idle') {
+      saveStrategy()
+    }
+  }, [allQueriesSuccessful, saveState, saveStrategy])
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center">
         <h2 className="text-3xl font-bold mb-2">Your Personalized Strategy</h2>
-        <p className="text-muted-foreground">
+        <p className="text-muted-foreground mb-3">
           {isAnyLoading
             ? "Loading your personalized strategy..."
             : "Everything you need to grow with confidence"}
         </p>
+
+        {/* Save Status Indicator */}
+        {saveState !== 'idle' && (
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium mb-4">
+            {saveState === 'saving' && (
+              <div className="flex items-center gap-2 text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+                <RefreshCw className="h-4 w-4 animate-spin" />
+                Saving your strategy...
+              </div>
+            )}
+            {saveState === 'saved' && (
+              <div className="flex items-center gap-2 text-green-600 bg-green-50 px-3 py-1 rounded-full">
+                <CheckCircle2 className="h-4 w-4" />
+                Strategy saved successfully
+              </div>
+            )}
+            {saveState === 'error' && (
+              <div className="flex items-center gap-2 text-red-600 bg-red-50 px-3 py-1 rounded-full">
+                <AlertCircle className="h-4 w-4" />
+                {saveError || 'Failed to save strategy'}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* About Me Section */}
