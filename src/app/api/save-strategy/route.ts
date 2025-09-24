@@ -5,6 +5,7 @@ import { UserProfile, GeneratedStrategy } from '@/lib/strategy-types';
 import { OPENAI_MODEL } from '@/lib/constants';
 
 interface SaveStrategyRequest {
+  userId: string;
   userProfile: UserProfile;
   generatedStrategy: GeneratedStrategy;
 }
@@ -12,9 +13,16 @@ interface SaveStrategyRequest {
 export async function POST(request: NextRequest) {
   try {
     const body: SaveStrategyRequest = await request.json();
-    const { userProfile, generatedStrategy } = body;
+    const { userId, userProfile, generatedStrategy } = body;
 
     // Validate required fields
+    if (!userId) {
+      return NextResponse.json(
+        { error: 'Bad Request', message: 'User ID is required' },
+        { status: 400 }
+      );
+    }
+
     if (!userProfile) {
       return NextResponse.json(
         { error: 'Bad Request', message: 'User profile is required' },
@@ -62,8 +70,31 @@ export async function POST(request: NextRequest) {
     // Connect to database
     await connectToDatabase();
 
+    // Check if user already has a strategy
+    const existingStrategy = await StrategyGeneration.findOne({ userId });
+
+    if (existingStrategy) {
+      // Update existing strategy instead of creating a new one
+      existingStrategy.userProfile = userProfile;
+      existingStrategy.generatedStrategy = generatedStrategy;
+      existingStrategy.metadata.model = OPENAI_MODEL;
+      existingStrategy.metadata.updatedAt = new Date();
+
+      const updatedStrategy = await existingStrategy.save();
+
+      return NextResponse.json({
+        success: true,
+        message: 'Strategy updated successfully',
+        id: updatedStrategy._id,
+        createdAt: updatedStrategy.metadata.createdAt,
+        updatedAt: updatedStrategy.metadata.updatedAt,
+        isUpdate: true
+      }, { status: 200 });
+    }
+
     // Create new strategy generation document
     const strategyDoc = new StrategyGeneration({
+      userId,
       userProfile,
       generatedStrategy,
       metadata: {
@@ -81,6 +112,7 @@ export async function POST(request: NextRequest) {
       message: 'Strategy saved successfully',
       id: savedStrategy._id,
       createdAt: savedStrategy.metadata.createdAt,
+      isUpdate: false
     }, { status: 201 });
 
   } catch (error) {

@@ -1,11 +1,12 @@
 'use client'
 
-import { useState, Suspense } from 'react'
+import { useState, Suspense, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { ArrowLeft, ArrowRight, CheckCircle2, Loader2 } from 'lucide-react'
-import { UserProfile } from '@/lib/strategy-types'
+import { UserProfile, GeneratedStrategy } from '@/lib/strategy-types'
+import { getUserId, saveStrategyId } from '@/lib/user-identity'
 
 // Dynamically import strategy components
 const PersonalStep = dynamic(() => import('@/components/strategy/personal-step').then(mod => ({ default: mod.PersonalStep })), {
@@ -53,6 +54,13 @@ const TOTAL_STEPS = 7
 export default function StrategyPage() {
   const [currentStep, setCurrentStep] = useState(1)
   const [showDashboard, setShowDashboard] = useState(false)
+  const [userId, setUserId] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [existingStrategy, setExistingStrategy] = useState<{
+    id: string;
+    userProfile: UserProfile;
+    generatedStrategy: GeneratedStrategy;
+  } | null>(null)
 
   const [profile, setProfile] = useState<Partial<UserProfile>>({
     voice: {
@@ -77,6 +85,34 @@ export default function StrategyPage() {
       nicheSpecific: {}
     }
   })
+
+  // Check for existing strategy on mount
+  useEffect(() => {
+    const checkExistingStrategy = async () => {
+      try {
+        const uid = getUserId()
+        setUserId(uid)
+
+        const response = await fetch(`/api/strategy/check?userId=${uid}`)
+        if (response.ok) {
+          const data = await response.json()
+
+          if (data.exists && data.strategy) {
+            setExistingStrategy(data.strategy)
+            setProfile(data.strategy.userProfile)
+            setShowDashboard(true)
+            saveStrategyId(data.strategy.id)
+          }
+        }
+      } catch (error) {
+        console.error('Error checking for existing strategy:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    checkExistingStrategy()
+  }, [])
 
   const handleNext = () => {
     if (currentStep < TOTAL_STEPS) {
@@ -125,11 +161,26 @@ export default function StrategyPage() {
     }
   }
 
+  if (loading) {
+    return (
+      <div className="container max-w-4xl mx-auto py-8">
+        <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-muted-foreground">Checking for existing strategy...</p>
+        </div>
+      </div>
+    )
+  }
+
   if (showDashboard) {
     return (
       <div className="container max-w-6xl mx-auto py-8">
         <Suspense fallback={<div className="flex items-center justify-center py-12"><Loader2 className="h-6 w-6 animate-spin" /></div>}>
-          <NewStrategyDashboard profile={profile as UserProfile} />
+          <NewStrategyDashboard
+            profile={profile as UserProfile}
+            userId={userId!}
+            existingStrategy={existingStrategy?.generatedStrategy}
+          />
         </Suspense>
       </div>
     )

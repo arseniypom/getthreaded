@@ -2,6 +2,7 @@ import mongoose, { Schema, Document, Model } from 'mongoose';
 import type { UserProfile, GeneratedStrategy } from '@/lib/strategy-types';
 
 export interface IStrategyGeneration extends Document {
+  userId: string;
   userProfile: UserProfile;
   generatedStrategy: GeneratedStrategy;
   metadata: {
@@ -167,6 +168,7 @@ const GeneratedStrategySchema = new Schema({
 
 // Main strategy generation schema
 const StrategyGenerationSchema = new Schema<IStrategyGeneration>({
+  userId: { type: String, required: true },
   userProfile: { type: UserProfileSchema, required: true },
   generatedStrategy: { type: GeneratedStrategySchema, required: true },
   metadata: {
@@ -185,6 +187,9 @@ StrategyGenerationSchema.pre('save', function(next) {
 // Indexes for better query performance
 StrategyGenerationSchema.index({ 'metadata.createdAt': -1 });
 StrategyGenerationSchema.index({ 'userProfile.personal.handle': 1 });
+StrategyGenerationSchema.index({ 'userId': 1 });
+// Compound index for checking existing strategies by userId
+StrategyGenerationSchema.index({ 'userId': 1, 'metadata.createdAt': -1 });
 
 let StrategyGeneration: Model<IStrategyGeneration>;
 

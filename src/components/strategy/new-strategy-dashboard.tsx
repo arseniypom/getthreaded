@@ -18,18 +18,21 @@ import {
 
 interface NewStrategyDashboardProps {
   profile: UserProfile
+  userId: string
+  existingStrategy?: GeneratedStrategy
 }
 
-export function NewStrategyDashboard({ profile }: NewStrategyDashboardProps) {
+export function NewStrategyDashboard({ profile, userId, existingStrategy }: NewStrategyDashboardProps) {
   const queries = useGenerateFullStrategy(profile)
-  const [saveState, setSaveState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
+  const [saveState, setSaveState] = useState<'idle' | 'saving' | 'saved' | 'error'>(existingStrategy ? 'saved' : 'idle')
   const [saveError, setSaveError] = useState<string | null>(null)
+  const [displayStrategy, setDisplayStrategy] = useState<GeneratedStrategy | null>(existingStrategy || null)
 
-  // Check if any queries are loading
-  const isAnyLoading = Object.values(queries).some(q => q.isLoading)
+  // Check if any queries are loading (only if we don't have existing strategy)
+  const isAnyLoading = !existingStrategy && Object.values(queries).some(q => q.isLoading)
 
-  // Check if all queries have successful data
-  const allQueriesSuccessful = Object.values(queries).every(q => q.data && !q.error && !q.isLoading)
+  // Check if all queries have successful data (only relevant if no existing strategy)
+  const allQueriesSuccessful = !existingStrategy && Object.values(queries).every(q => q.data && !q.error && !q.isLoading)
 
   const saveStrategy = useCallback(async () => {
     if (!allQueriesSuccessful) return
@@ -53,6 +56,7 @@ export function NewStrategyDashboard({ profile }: NewStrategyDashboardProps) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          userId,
           userProfile: profile,
           generatedStrategy
         })
@@ -64,19 +68,48 @@ export function NewStrategyDashboard({ profile }: NewStrategyDashboardProps) {
       }
 
       setSaveState('saved')
+      setDisplayStrategy(generatedStrategy)
     } catch (error) {
       console.error('Error saving strategy:', error)
       setSaveState('error')
       setSaveError(error instanceof Error ? error.message : 'Failed to save strategy')
     }
-  }, [allQueriesSuccessful, profile, queries])
+  }, [allQueriesSuccessful, profile, queries, userId])
 
-  // Save strategy to database when all data is loaded
+  // Save strategy to database when all data is loaded (only for new strategies)
   useEffect(() => {
-    if (allQueriesSuccessful && saveState === 'idle') {
+    if (!existingStrategy && allQueriesSuccessful && saveState === 'idle') {
       saveStrategy()
     }
-  }, [allQueriesSuccessful, saveState, saveStrategy])
+  }, [existingStrategy, allQueriesSuccessful, saveState, saveStrategy])
+
+  // Determine which data to display
+  const getDisplayData = () => {
+    if (existingStrategy) {
+      return existingStrategy
+    }
+
+    if (displayStrategy) {
+      return displayStrategy
+    }
+
+    // Build from queries if all successful
+    if (allQueriesSuccessful) {
+      return {
+        aboutMe: queries.aboutMe.data!,
+        aboutAudience: queries.aboutAudience.data!,
+        personalInsights: queries.insights.data!,
+        postingStrategy: queries.postingStrategy.data!,
+        posts: queries.posts.data!,
+        tipsAndTricks: queries.tips.data!,
+        personalChallenge: queries.challenge.data!
+      }
+    }
+
+    return null
+  }
+
+  const strategyData = getDisplayData()
 
   return (
     <div className="space-y-6">
@@ -123,7 +156,41 @@ export function NewStrategyDashboard({ profile }: NewStrategyDashboardProps) {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {queries.aboutMe.isLoading ? (
+          {existingStrategy ? (
+            // Display existing strategy data
+            <>
+              <div>
+                <h3 className="font-semibold mb-2 flex items-center gap-2">
+                  <Target className="h-4 w-4" />
+                  Goals
+                </h3>
+                <div className="space-y-2">
+                  <div className="flex items-start gap-2">
+                    <Badge variant="default">Main</Badge>
+                    <p className="text-sm">{strategyData?.aboutMe.mainGoal}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="font-semibold mb-2">Mission Statement</h3>
+                <p className="italic bg-muted p-3 rounded-lg">
+                  &quot;{strategyData?.aboutMe.mission}&quot;
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-semibold mb-2">Core Values</h3>
+                <div className="flex flex-wrap gap-2">
+                  {strategyData?.aboutMe.values.map((value, index) => (
+                    <Badge key={index} variant="outline">
+                      {value}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            </>
+          ) : queries.aboutMe.isLoading ? (
             <AboutMeSkeleton />
           ) : queries.aboutMe.error ? (
             <ErrorAlert
