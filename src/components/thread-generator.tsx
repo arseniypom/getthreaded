@@ -19,11 +19,9 @@ interface ThreadGeneratorProps {
 }
 
 const placeholders = [
-  "Different data types in JavaScript",
-  "How to build a personal brand",
-  "React best practices in 2025",
+  "Signals you’re targeting the wrong audience",
+  "How to write cold DM that doesn’t feel salesy",
   "Morning routine tips for productivity",
-  "Understanding Web3 basics"
 ];
 
 export function ThreadGenerator({

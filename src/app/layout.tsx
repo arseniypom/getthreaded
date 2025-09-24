@@ -10,6 +10,8 @@ const geistSans = Geist({
   subsets: ["latin"],
   fallback: ["system-ui", "Arial", "sans-serif"],
   display: "swap",
+  preload: true,
+  adjustFontFallback: true,
 });
 
 const geistMono = Geist_Mono({
@@ -17,6 +19,8 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
   fallback: ["ui-monospace", "SFMono-Regular", "Monaco", "Consolas", "monospace"],
   display: "swap",
+  preload: true,
+  adjustFontFallback: true,
 });
 
 export const metadata: Metadata = {

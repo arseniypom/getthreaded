@@ -1,17 +1,47 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
+import dynamic from 'next/dynamic'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
-import { ArrowLeft, ArrowRight, CheckCircle2 } from 'lucide-react'
+import { ArrowLeft, ArrowRight, CheckCircle2, Loader2 } from 'lucide-react'
 import { UserProfile } from '@/lib/strategy-types'
-import { PersonalStep } from '@/components/strategy/personal-step'
-import { DiscoveryStep } from '@/components/strategy/discovery-step'
-import { FocusRefinementStep } from '@/components/strategy/focus-refinement-step'
-import { VoiceStep } from '@/components/strategy/voice-step'
-import { AudienceDiscoveryStep } from '@/components/strategy/audience-discovery-step'
-import { BoundariesStep } from '@/components/strategy/boundaries-step'
-import { NewStrategyDashboard } from '@/components/strategy/new-strategy-dashboard'
+
+// Dynamically import strategy components
+const PersonalStep = dynamic(() => import('@/components/strategy/personal-step').then(mod => ({ default: mod.PersonalStep })), {
+  loading: () => <div className="flex items-center justify-center py-12"><Loader2 className="h-6 w-6 animate-spin" /></div>,
+  ssr: false
+});
+
+const DiscoveryStep = dynamic(() => import('@/components/strategy/discovery-step').then(mod => ({ default: mod.DiscoveryStep })), {
+  loading: () => <div className="flex items-center justify-center py-12"><Loader2 className="h-6 w-6 animate-spin" /></div>,
+  ssr: false
+});
+
+const FocusRefinementStep = dynamic(() => import('@/components/strategy/focus-refinement-step').then(mod => ({ default: mod.FocusRefinementStep })), {
+  loading: () => <div className="flex items-center justify-center py-12"><Loader2 className="h-6 w-6 animate-spin" /></div>,
+  ssr: false
+});
+
+const VoiceStep = dynamic(() => import('@/components/strategy/voice-step').then(mod => ({ default: mod.VoiceStep })), {
+  loading: () => <div className="flex items-center justify-center py-12"><Loader2 className="h-6 w-6 animate-spin" /></div>,
+  ssr: false
+});
+
+const AudienceDiscoveryStep = dynamic(() => import('@/components/strategy/audience-discovery-step').then(mod => ({ default: mod.AudienceDiscoveryStep })), {
+  loading: () => <div className="flex items-center justify-center py-12"><Loader2 className="h-6 w-6 animate-spin" /></div>,
+  ssr: false
+});
+
+const BoundariesStep = dynamic(() => import('@/components/strategy/boundaries-step').then(mod => ({ default: mod.BoundariesStep })), {
+  loading: () => <div className="flex items-center justify-center py-12"><Loader2 className="h-6 w-6 animate-spin" /></div>,
+  ssr: false
+});
+
+const NewStrategyDashboard = dynamic(() => import('@/components/strategy/new-strategy-dashboard').then(mod => ({ default: mod.NewStrategyDashboard })), {
+  loading: () => <div className="flex items-center justify-center py-12"><Loader2 className="h-6 w-6 animate-spin" /></div>,
+  ssr: false
+});
 
 const TOTAL_STEPS = 6
 
@@ -105,7 +135,9 @@ export default function StrategyPage() {
             Back to Setup
           </Button>
         </div>
-        <NewStrategyDashboard profile={profile as UserProfile} />
+        <Suspense fallback={<div className="flex items-center justify-center py-12"><Loader2 className="h-6 w-6 animate-spin" /></div>}>
+          <NewStrategyDashboard profile={profile as UserProfile} />
+        </Suspense>
       </div>
     )
   }
@@ -123,42 +155,44 @@ export default function StrategyPage() {
       </div>
 
       <div className="mb-6">
-        {currentStep === 1 && (
-          <PersonalStep
-            profile={profile}
-            onUpdate={updateProfile}
-          />
-        )}
-        {currentStep === 2 && (
-          <DiscoveryStep
-            profile={profile}
-            onUpdate={updateProfile}
-          />
-        )}
-        {currentStep === 3 && (
-          <FocusRefinementStep
-            profile={profile}
-            onUpdate={updateProfile}
-          />
-        )}
-        {currentStep === 4 && (
-          <VoiceStep
-            profile={profile}
-            onUpdate={updateProfile}
-          />
-        )}
-        {currentStep === 5 && (
-          <AudienceDiscoveryStep
-            profile={profile}
-            onUpdate={updateProfile}
-          />
-        )}
-        {currentStep === 6 && (
-          <BoundariesStep
-            profile={profile}
-            onUpdate={updateProfile}
-          />
-        )}
+        <Suspense fallback={<div className="flex items-center justify-center py-12"><Loader2 className="h-6 w-6 animate-spin" /></div>}>
+          {currentStep === 1 && (
+            <PersonalStep
+              profile={profile}
+              onUpdate={updateProfile}
+            />
+          )}
+          {currentStep === 2 && (
+            <DiscoveryStep
+              profile={profile}
+              onUpdate={updateProfile}
+            />
+          )}
+          {currentStep === 3 && (
+            <FocusRefinementStep
+              profile={profile}
+              onUpdate={updateProfile}
+            />
+          )}
+          {currentStep === 4 && (
+            <VoiceStep
+              profile={profile}
+              onUpdate={updateProfile}
+            />
+          )}
+          {currentStep === 5 && (
+            <AudienceDiscoveryStep
+              profile={profile}
+              onUpdate={updateProfile}
+            />
+          )}
+          {currentStep === 6 && (
+            <BoundariesStep
+              profile={profile}
+              onUpdate={updateProfile}
+            />
+          )}
+        </Suspense>
       </div>
 
       <div className="flex justify-between">

@@ -72,7 +72,7 @@ export function PersonalStep({ profile, onUpdate }: PersonalStepProps) {
           <div>
             <h3 className="text-lg font-semibold mb-4">Section 1: Identity</h3>
 
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="name">Your Name</Label>
                 <Input
@@ -182,43 +182,45 @@ export function PersonalStep({ profile, onUpdate }: PersonalStepProps) {
 
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="primary-goal" className="flex items-center gap-2">
-                  <Target className="h-4 w-4" />
-                  Main Goal
-                </Label>
-                <Input
-                  id="primary-goal"
-                  value={primaryGoal}
-                  onChange={(e) => {
-                    setPrimaryGoal(e.target.value)
-                    handleUpdate({ primaryGoal: e.target.value })
-                  }}
-                  placeholder="e.g., Get 10 coaching clients, Launch course, Get 1000 followers"
-                />
-              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="primary-goal" className="flex items-center gap-2">
+                    <Target className="h-4 w-4" />
+                    Main Goal
+                  </Label>
+                  <Input
+                    id="primary-goal"
+                    value={primaryGoal}
+                    onChange={(e) => {
+                      setPrimaryGoal(e.target.value)
+                      handleUpdate({ primaryGoal: e.target.value })
+                    }}
+                    placeholder="e.g., Get 10 coaching clients, Launch course, Get 1000 followers"
+                  />
+                </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="timeframe">Timeframe</Label>
-                <Select
-                  value={timeframe}
-                  onValueChange={(value: Timeframe) => {
-                    setTimeframe(value)
-                    handleUpdate({ timeframe: value })
-                  }}
-                >
-                  <SelectTrigger id="timeframe">
-                    <SelectValue placeholder="Select timeframe" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1-month">1 Month Sprint</SelectItem>
-                    <SelectItem value="3-months">3 Month Push</SelectItem>
-                    <SelectItem value="6-months">6 Month Journey</SelectItem>
-                  </SelectContent>
-                </Select>
-                <p className="text-sm text-muted-foreground">
-                  How long do you want to commit to this strategy?
-                </p>
+                <div className="space-y-2">
+                  <Label htmlFor="timeframe">Timeframe</Label>
+                  <Select
+                    value={timeframe}
+                    onValueChange={(value: Timeframe) => {
+                      setTimeframe(value)
+                      handleUpdate({ timeframe: value })
+                    }}
+                  >
+                    <SelectTrigger id="timeframe">
+                      <SelectValue placeholder="Select timeframe" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="1-month">1 Month Sprint</SelectItem>
+                      <SelectItem value="3-months">3 Month Push</SelectItem>
+                      <SelectItem value="6-months">6 Month Journey</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-sm text-muted-foreground">
+                    How long do you want to commit to this strategy?
+                  </p>
+                </div>
               </div>
             </div>
           </div>

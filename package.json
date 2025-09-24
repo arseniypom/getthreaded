@@ -6,6 +6,7 @@
     "dev": "next dev --turbopack",
     "dev:docker": "./scripts/dev.sh",
     "build": "next build --turbopack",
+    "build:analyze": "ANALYZE=true npm run build",
     "start": "next start",
     "lint": "eslint"
   },
@@ -46,6 +47,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@next/bundle-analyzer": "^15.5.4",
     "@tailwindcss/postcss": "^4",
     "@tanstack/eslint-plugin-query": "^5.89.0",
     "@types/node": "^20",

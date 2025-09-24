@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import dynamic from 'next/dynamic';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Separator } from '@/components/ui/separator';
 import {
@@ -12,7 +13,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ThreadsDataTable, ThreadsPostData } from '@/components/threads-data-table';
 import { Loader2, Search, AlertCircle, RefreshCw, Clock, Trash2, History, User, X, TrendingUp, Calendar } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useProfileHistory } from '@/hooks/useProfileHistory';
@@ -26,6 +26,18 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { formatRelativeTime } from '@/lib/format-time';
+
+// Dynamically import heavy components
+const ThreadsDataTable = dynamic(
+  () => import('@/components/threads-data-table').then(mod => ({ default: mod.ThreadsDataTable })),
+  {
+    loading: () => <div className="flex items-center justify-center py-8"><Loader2 className="h-6 w-6 animate-spin" /></div>,
+    ssr: false
+  }
+);
+
+// Import types separately to avoid bundling issues
+import type { ThreadsPostData } from '@/components/threads-data-table';
 
 export default function Insights() {
   const [handle, setHandle] = useState('');
@@ -385,7 +397,9 @@ export default function Insights() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <ThreadsDataTable data={posts} />
+                  <Suspense fallback={<div className="flex items-center justify-center py-8"><Loader2 className="h-6 w-6 animate-spin" /></div>}>
+                    <ThreadsDataTable data={posts} />
+                  </Suspense>
                 </CardContent>
               </Card>
             )}

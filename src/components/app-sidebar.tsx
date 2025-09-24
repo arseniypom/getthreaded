@@ -58,7 +58,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
                   <span className="font-medium">GetThreaded</span>
-                  <span className="text-xs">Generate threads</span>
+                  <span className="text-xs">Grow and Earn on Threads</span>
                 </div>
               </Link>
             </SidebarMenuButton>
