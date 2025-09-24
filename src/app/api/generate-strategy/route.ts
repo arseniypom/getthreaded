@@ -175,8 +175,8 @@ Generate specific, actionable content based on this profile. Be creative and per
         values: ['Authenticity', 'Value', 'Consistency']
       },
       aboutAudience: {
-        pains: profile?.audience?.psychographics?.painPoints?.map(p => p.replace('-', ' ')) || ['Time constraints', 'Information overload'],
-        desires: profile?.audience?.psychographics?.aspirations?.map(a => a.replace('-', ' ')) || ['Growth', 'Freedom'],
+        pains: ['Time constraints', 'Information overload', 'Lack of clear direction'],
+        desires: ['Growth & progress', 'Freedom & flexibility', 'Recognition & impact'],
         portraits: [
           {
             name: 'Sarah, 28, Manager',

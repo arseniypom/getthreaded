@@ -47,9 +47,7 @@ export async function GET() {
         location: "Urban US"
       },
       psychographics: {
-        dailyReality: ["career-focused", "side-hustle"],
-        painPoints: ["no-time", "career-stuck", "info-overload"],
-        aspirations: ["freedom", "growth", "impact"]
+        dailyReality: ["career-focused", "side-hustle"]
       }
     },
     boundaries: {

@@ -21,15 +21,19 @@ export async function POST(request: Request) {
 
     const systemPrompt = `You are an expert social media strategist. Generate the "About Audience" section with audience insights based on the user profile. Be specific and create realistic audience portraits.`
 
-    const userPrompt = `Based on this profile, generate audience insights:
+    const userPrompt = `Based on this profile, generate audience insights and determine their pain points and desires from the context:
 
-Profile:
+Profile Context:
+- User's Goal: ${profile.personal?.goals?.primary}
+- User's Journey Stage: ${profile.personal?.journeyStage}
+- Content Niche: ${profile.niches?.primary}
+- Content Pillars: ${profile.pillars?.join(', ') || 'Not specified'}
+
+Audience Demographics:
 - Target Age: ${profile.audience?.demographics?.ageRange?.min}-${profile.audience?.demographics?.ageRange?.max}
 - Gender: ${profile.audience?.demographics?.genderMix}
 - Location: ${profile.audience?.demographics?.location || 'Global'}
 - Daily Reality: ${profile.audience?.psychographics?.dailyReality?.join(', ')}
-- Pain Points: ${profile.audience?.psychographics?.painPoints?.map(p => p.replace('-', ' ')).join(', ')}
-- Aspirations: ${profile.audience?.psychographics?.aspirations?.map(a => a.replace('-', ' ')).join(', ')}
 
 Generate as JSON:
 {

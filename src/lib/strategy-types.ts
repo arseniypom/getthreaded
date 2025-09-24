@@ -38,23 +38,6 @@ export type DailyReality =
   | 'corporate-climber'
   | 'creative-soul'
 
-export type PainPoint =
-  | 'no-time'
-  | 'career-stuck'
-  | 'info-overload'
-  | 'imposter-syndrome'
-  | 'work-life-balance'
-  | 'financial-stress'
-  | 'no-direction'
-  | 'disconnected'
-
-export type Aspiration =
-  | 'freedom'
-  | 'recognition'
-  | 'security'
-  | 'growth'
-  | 'connection'
-  | 'impact'
 
 
 export const NICHE_OPTIONS = [
@@ -231,8 +214,6 @@ export interface UserProfile {
     }
     psychographics: {
       dailyReality: DailyReality[]
-      painPoints: PainPoint[]
-      aspirations: Aspiration[]
     }
   }
 

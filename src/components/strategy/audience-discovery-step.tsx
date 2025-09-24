@@ -1,6 +1,6 @@
 'use client'
 
-import { UserProfile, GenderMix, DailyReality, PainPoint, Aspiration } from '@/lib/strategy-types'
+import { UserProfile, GenderMix, DailyReality } from '@/lib/strategy-types'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -32,12 +32,6 @@ export function AudienceDiscoveryStep({ profile, onUpdate }: AudienceDiscoverySt
   const [dailyRealities, setDailyRealities] = useState<DailyReality[]>(
     profile.audience?.psychographics?.dailyReality || []
   )
-  const [painPoints, setPainPoints] = useState<PainPoint[]>(
-    profile.audience?.psychographics?.painPoints || []
-  )
-  const [aspirations, setAspirations] = useState<Aspiration[]>(
-    profile.audience?.psychographics?.aspirations || []
-  )
 
   const updateProfile = () => {
     onUpdate({
@@ -48,9 +42,7 @@ export function AudienceDiscoveryStep({ profile, onUpdate }: AudienceDiscoverySt
           location
         },
         psychographics: {
-          dailyReality: dailyRealities,
-          painPoints,
-          aspirations
+          dailyReality: dailyRealities
         }
       }
     })
@@ -67,25 +59,6 @@ export function AudienceDiscoveryStep({ profile, onUpdate }: AudienceDiscoverySt
     { id: 'creative-soul' as DailyReality, icon: Palette, label: 'Creative soul' }
   ]
 
-  const painPointOptions = [
-    { id: 'no-time' as PainPoint, label: 'Not enough time in the day' },
-    { id: 'career-stuck' as PainPoint, label: 'Feeling stuck in their career' },
-    { id: 'info-overload' as PainPoint, label: 'Information overload' },
-    { id: 'imposter-syndrome' as PainPoint, label: 'Imposter syndrome' },
-    { id: 'work-life-balance' as PainPoint, label: 'Work-life balance struggle' },
-    { id: 'financial-stress' as PainPoint, label: 'Financial stress' },
-    { id: 'no-direction' as PainPoint, label: 'Lack of clear direction' },
-    { id: 'disconnected' as PainPoint, label: 'Feeling disconnected' }
-  ]
-
-  const aspirationOptions = [
-    { id: 'freedom' as Aspiration, label: 'Freedom & flexibility' },
-    { id: 'recognition' as Aspiration, label: 'Recognition & status' },
-    { id: 'security' as Aspiration, label: 'Security & stability' },
-    { id: 'growth' as Aspiration, label: 'Growth & learning' },
-    { id: 'connection' as Aspiration, label: 'Connection & community' },
-    { id: 'impact' as Aspiration, label: 'Impact & meaning' }
-  ]
 
 
   const toggleArrayItem = <T extends string>(
@@ -181,8 +154,8 @@ export function AudienceDiscoveryStep({ profile, onUpdate }: AudienceDiscoverySt
 
       <Card>
         <CardHeader>
-          <CardTitle>Section 2: Psychographic Mapping</CardTitle>
-          <CardDescription>The Deep Stuff - What Drives Them</CardDescription>
+          <CardTitle>Section 2: Daily Reality</CardTitle>
+          <CardDescription>What Your Audience&apos;s Day-to-Day Looks Like</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div>
@@ -207,44 +180,6 @@ export function AudienceDiscoveryStep({ profile, onUpdate }: AudienceDiscoverySt
             </div>
           </div>
 
-          <div>
-            <Label className="mb-3 block">Pain Points (select top 3)</Label>
-            <div className="space-y-2">
-              {painPointOptions.map(option => {
-                const isSelected = painPoints.includes(option.id)
-                return (
-                  <Button
-                    key={option.id}
-                    variant={isSelected ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => toggleArrayItem(painPoints, setPainPoints, option.id, 3)}
-                    className="w-full justify-start"
-                  >
-                    {option.label}
-                  </Button>
-                )
-              })}
-            </div>
-          </div>
-
-          <div>
-            <Label className="mb-3 block">What They&apos;re Chasing</Label>
-            <div className="grid grid-cols-2 gap-2">
-              {aspirationOptions.map(option => {
-                const isSelected = aspirations.includes(option.id)
-                return (
-                  <Button
-                    key={option.id}
-                    variant={isSelected ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => toggleArrayItem(aspirations, setAspirations, option.id, 6)}
-                  >
-                    {option.label}
-                  </Button>
-                )
-              })}
-            </div>
-          </div>
         </CardContent>
       </Card>
     </div>

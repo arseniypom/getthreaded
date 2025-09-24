@@ -13,6 +13,11 @@ const PersonalStep = dynamic(() => import('@/components/strategy/personal-step')
   ssr: false
 });
 
+const GoalsStep = dynamic(() => import('@/components/strategy/goals-step').then(mod => ({ default: mod.GoalsStep })), {
+  loading: () => <div className="flex items-center justify-center py-12"><Loader2 className="h-6 w-6 animate-spin" /></div>,
+  ssr: false
+});
+
 const DiscoveryStep = dynamic(() => import('@/components/strategy/discovery-step').then(mod => ({ default: mod.DiscoveryStep })), {
   loading: () => <div className="flex items-center justify-center py-12"><Loader2 className="h-6 w-6 animate-spin" /></div>,
   ssr: false
@@ -43,7 +48,7 @@ const NewStrategyDashboard = dynamic(() => import('@/components/strategy/new-str
   ssr: false
 });
 
-const TOTAL_STEPS = 6
+const TOTAL_STEPS = 7
 
 export default function StrategyPage() {
   const [currentStep, setCurrentStep] = useState(1)
@@ -103,19 +108,19 @@ export default function StrategyPage() {
       case 1:
         return profile.personal?.name &&
                (profile.personal?.handle || profile.personal?.handle === 'pending') &&
-               profile.personal?.journeyStage &&
-               profile.personal?.goals?.primary
+               profile.personal?.journeyStage
       case 2:
-        return profile.niches?.primary
+        return profile.personal?.goals?.primary
       case 3:
-        return profile.pillars && profile.pillars.length >= 2
+        return profile.niches?.primary
       case 4:
-        return profile.voice?.signatureMoves && profile.voice.signatureMoves.length >= 2
+        return profile.pillars && profile.pillars.length >= 2
       case 5:
-        return profile.audience?.demographics?.ageRange &&
-               profile.audience?.psychographics?.dailyReality?.length > 0 &&
-               profile.audience?.psychographics?.painPoints?.length > 0
+        return profile.voice?.signatureMoves && profile.voice.signatureMoves.length >= 2
       case 6:
+        return profile.audience?.demographics?.ageRange &&
+               profile.audience?.psychographics?.dailyReality?.length > 0
+      case 7:
         return true // Boundaries are all optional
       default:
         return true
@@ -163,30 +168,36 @@ export default function StrategyPage() {
             />
           )}
           {currentStep === 2 && (
-            <DiscoveryStep
+            <GoalsStep
               profile={profile}
               onUpdate={updateProfile}
             />
           )}
           {currentStep === 3 && (
-            <FocusRefinementStep
+            <DiscoveryStep
               profile={profile}
               onUpdate={updateProfile}
             />
           )}
           {currentStep === 4 && (
-            <VoiceStep
+            <FocusRefinementStep
               profile={profile}
               onUpdate={updateProfile}
             />
           )}
           {currentStep === 5 && (
-            <AudienceDiscoveryStep
+            <VoiceStep
               profile={profile}
               onUpdate={updateProfile}
             />
           )}
           {currentStep === 6 && (
+            <AudienceDiscoveryStep
+              profile={profile}
+              onUpdate={updateProfile}
+            />
+          )}
+          {currentStep === 7 && (
             <BoundariesStep
               profile={profile}
               onUpdate={updateProfile}

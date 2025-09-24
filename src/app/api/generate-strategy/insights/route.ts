@@ -27,7 +27,7 @@ Profile:
 - Journey Stage: ${profile.personal?.journeyStage}
 - Niches: ${profile.niches?.primary}, ${profile.niches?.secondary || ''}
 - Voice Style: ${profile.voice?.signatureMoves?.join(', ')}
-- Audience Pain Points: ${profile.audience?.psychographics?.painPoints?.join(', ')}
+- Audience Daily Reality: ${profile.audience?.psychographics?.dailyReality?.join(', ')}
 
 Generate as JSON:
 {
